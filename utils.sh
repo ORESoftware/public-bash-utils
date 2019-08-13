@@ -9,6 +9,21 @@ publish_local(){
  cat "$BASH_SOURCE" > "$HOME/.oresoftware/bash/public-bash-utils.sh"
 }
 
+check_git_index(){
+
+  if  ! git diff --quiet; then
+     echo 'Changes to files need to be committed. Check your git index.';
+     exit 1;
+  fi
+
+  if  test `git status --porcelain | wc -l` != '0'; then
+     echo 'Changes to (untracked) files need to be committed. Check your git index.';
+     exit 1;
+  fi
+}
+
+export -f check_git_index;
+
 
 ores_resource(){
   for f in `(cd "$HOME/.oresoftware/bash" && find . -type f)`; do
