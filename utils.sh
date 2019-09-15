@@ -11,15 +11,22 @@ publish_local(){
 
 check_git_index(){
 
+  if [[  "$skip_check_git_index" == 'yes' ]]; then
+     return 0;
+  fi
+
   if  ! git diff --quiet; then
      echo 'Changes to files need to be committed. Check your git index.';
+     echo 'Use skip_check_git_index=yes to skip check.';
      exit 1;
   fi
 
   if  test `git status --porcelain | wc -l` != '0'; then
      echo 'Changes to (untracked) files need to be committed. Check your git index.';
+     echo 'Use skip_check_git_index=yes to skip check.';
      exit 1;
   fi
+
 }
 
 export -f check_git_index;
