@@ -11,7 +11,14 @@ zmx_stderr='\033[1;35m'
 zmx_stdout='\033[1;36m'
 zmx_no_color='\033[0m'
 
-publish_local(){
+ores_install_public_bash_utils(){
+  mkdir -p "$HOME/.oresoftware/bash";
+  curl -H 'Cache-Control: no-cache' --silent \
+     "https://raw.githubusercontent.com/oresoftware/public-bash-utils/master/utils.sh?$(date +%s)" \
+      --output "$HOME/.oresoftware/bash/public-bash-utils.sh"
+}
+
+ores_publish_local(){
   mkdir -p "$HOME/.oresoftware/bash"
   cat "$BASH_SOURCE" > "$HOME/.oresoftware/bash/public-bash-utils.sh"
 }
@@ -20,22 +27,22 @@ if [[ -d 'node_modules/.bin' ]]; then
    export PATH="$PWD/node_modules/.bin:${PATH}"
 fi
 
-override_local_nm_cmds(){
+ores_override_local_nm_cmds(){
    npm_bin_root="$(npm bin -g)"
    export PATH="$npm_bin_root:${PATH}"
 }
 
-npmcd() {
+ores_npmcd() {
    cd "$(npm root)" && cd ..
 }
 
-get_ores_versions(){
+ores_get_versions(){
    echo "nodejs version: $(node --version)"
    echo "npm version: $(npm --version)"
    echo "typescript version: $(tsc --version)"
 }
 
-check_git_index(){
+ores_check_git_index(){
 
   if [[  "$skip_check_git_index" == 'yes' ]]; then
      return 0;
@@ -63,7 +70,7 @@ ores_resource(){
   done;
 }
 
-tailing(){
+ores_tailing(){
 
    local v="$name";
 
