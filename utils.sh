@@ -1,12 +1,38 @@
 #!/usr/bin/env bash
 
+all_interos_export="yep"
+
+if [[ ! "$SHELLOPTS" =~ "allexport" ]]; then
+  all_interos_export="nope"
+  set -a # we export every declared function using this flag
+fi
 
 zmx_stderr='\033[1;35m'
 zmx_stdout='\033[1;36m'
 zmx_no_color='\033[0m'
 
 publish_local(){
- cat "$BASH_SOURCE" > "$HOME/.oresoftware/bash/public-bash-utils.sh"
+  mkdir -p "$HOME/.oresoftware/bash"
+  cat "$BASH_SOURCE" > "$HOME/.oresoftware/bash/public-bash-utils.sh"
+}
+
+if [[ -d 'node_modules/.bin' ]]; then
+   export PATH="$PWD/node_modules/.bin:${PATH}"
+fi
+
+override_local_nm_cmds(){
+   npm_bin_root="$(npm bin -g)"
+   export PATH="$npm_bin_root:${PATH}"
+}
+
+npmcd() {
+   cd "$(npm root)" && cd ..
+}
+
+get_ores_versions(){
+   echo "nodejs version: $(node --version)"
+   echo "npm version: $(npm --version)"
+   echo "typescript version: $(tsc --version)"
 }
 
 check_git_index(){
@@ -28,8 +54,6 @@ check_git_index(){
   fi
 
 }
-
-export -f check_git_index;
 
 
 ores_resource(){
@@ -56,5 +80,9 @@ tailing(){
   done;
 }
 
-export -f tailing;
+
+if [[ "$all_interos_export" == "nope" ]]; then
+  set +a
+fi
+
 
